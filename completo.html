@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Frases Inglés</title>
+    <style>
+    body {
+      margin:0;
+      background:#0f172a;
+      color:#e6eef6;
+      font-family:Inter,system-ui;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      padding:20px;
+      text-align:center;
+    }
+    #container {
+      max-width:900px;
+      width:100%;
+    }
+    #phrase {
+      font-size:2.5rem;
+      margin-bottom:10px;
+      font-weight:700;
+    }
+    #timer {
+      font-size:2.2rem;
+      font-weight:700;
+      color:#06b6d4;
+      margin-bottom:18px;
+    }
+    .btns {
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      margin-top:20px;
+    }
+    button {
+      background:linear-gradient(90deg,#06b6d4,#7dd3fc);
+      border:none;
+      padding:10px 16px;
+      border-radius:8px;
+      color:#002;
+      cursor:pointer;
+      font-weight:700;
+      font-size:16px;
+    }
+    #translation {
+      font-size:1.6rem;
+      margin-top:12px;
+      color:#7dd3fc;
+      font-weight:600;
+      min-height:1.8em;
+    }
+    button[disabled] {
+      opacity:0.5;
+      cursor:not-allowed;
+    }
+  </style>
+  </head>
+  <body>
+    <div id="container"> <img src="file:///C:/Users/User/Desktop/logo%20PN%20transparente.png"
+
+        alt="" style="width: 157px; height: 227px;"><br>
+      <br>
+      <button id="startBtn">Iniciar</button>
+      <div id="timer">01:30</div>
+      <div id="phrase" aria-live="polite"></div>
+      <div id="translation" aria-live="polite"></div>
+      <div class="btns"> <button id="showBtn">Corregir</button> <button id="nextBtn">Siguiente</button>
+      </div>
+    </div>
+    <script>
+    let pairs = [
+      {en:"What is your name / surname?", es:"¿Cuál es su nombre / apellido?"},
+      {en:"What is your full name?", es:"¿Cuál es su nombre completo?"},
+      {en:"What is your date / place of birth?", es:"¿Cuál es su fecha / lugar de nacimiento?"},
+      {en:"What is your nationality?", es:"¿Cuál es su nacionalidad?"},
+      {en:"What is your phone number?", es:"¿Cuál es su número de teléfono?"},
+      {en:"Can I see your passport / ID / driving licence?", es:"¿Puedo ver su pasaporte / DNI / permiso de conducir?"},
+      {en:"Can you show me your residence permit?", es:"¿Puede enseñarme su permiso de residencia?"},
+      {en:"What is your address in Spain?", es:"¿Cuál es su dirección en España?"},
+      {en:"Sir, are you OK, are you injured?", es:"Señor, ¿está bien?, ¿está herido?"},
+      {en:"I am injured / I am wounded / I am bleeding", es:"Estoy lesionado / estoy herido / estoy sangrando"},
+      {en:"I am having a heart attack / I can’t breathe", es:"Me está dando un infarto / no puedo respirar"},
+      {en:"I think my arm / leg is broken", es:"Creo que tengo el brazo / la pierna rota"},
+      {en:"Somebody stabbed / shot me in the chest", es:"Alguien me ha apuñalado / disparado en el pecho"},
+      {en:"Try to keep calm, I’ll call an ambulance", es:"Intente mantener la calma, pediré una ambulancia"},
+      {en:"Do you take any medication?", es:"¿Toma alguna medicación?"},
+      {en:"My wallet has been stolen.", es:"Me han robado la cartera"},
+      {en:"Are you injured?", es:"¿Está usted herido?"},
+      {en:"How did it happen?", es:"¿Cómo ha sucedido?"},
+      {en:"Did you see the criminal? Can you describe him?", es:"¿Vio al autor? ¿Puede describirle?"},
+      {en:"How old was he?", es:"¿Cuántos años tenía?"},
+      {en:"Was he tall or short?", es:"¿Era alto o bajo?"},
+      {en:"To report a crime / to make a complaint", es:"Denunciar un delito"},
+      {en:"You have to go to the Police Station to report the crime.", es:"Tiene que ir a comisaría a denunciar el delito."},
+      {en:"Police! Stop! Don’t move! Freeze!", es:"¡Policía! ¡Alto! ¡No se mueva! ¡Quieto!"},
+      {en:"You are under arrest!", es:"Estás detenido"},
+      {en:"Against the wall, face the wall", es:"Contra la pared, cara a la pared"},
+      {en:"Get your hands out of your pockets! Let me see your hands!", es:"Saca las manos de los bolsillos / Déjame ver tus manos"},
+      {en:"Put your hands on the wall", es:"Pon las manos en la pared"},
+      {en:"Spread your arms, spread your legs, wider!", es:"Separa los brazos, separa las piernas, ¡más!"},
+      {en:"Put your hands behind your back", es:"Pon las manos detrás de tu espalda"},
+      {en:"Put your feet back", es:"Echa los pies hacia atrás"},
+      {en:"I am going to frisk you", es:"Voy a cachearte"},
+      {en:"I am going to handcuff you", es:"Voy a engrilletarte"},
+      {en:"Get into/ out of the car", es:"Métete en el coche"},
+      {en:"Drop the knife / Drop the weapon (gun)", es:"Suelte el cuchillo / suelte el arma."},
+      {en:"You are under arrest for murder", es:"Está detenido por un delito de homicidio"},
+      {en:"You are under arrest for robbery", es:"Está detenido por un delito de atraco"},
+      {en:"This is your duty lawyer", es:"Este es su abogado de oficio"},
+      {en:"These are your legal rights", es:"Estos son sus derechos"},
+      {en:"Do you understand your rights?", es:"¿Entiende sus derechos?"},
+      {en:"Are you going to sign the notification of your rights?", es:"¿Va a firmar la información de sus derechos?"},
+      {en:"Do you need to go to the doctor?", es:"¿Necesita ir al medico?"},
+      {en:"Do you want to inform anybody about your arrest?", es:"¿Quiere informar a alguien de su detención?"},
+      {en:"Have you ever been arrested?", es:"¿Ha estado detenido anteriormente?"},
+      {en:"I am going to take your fingerprints", es:"Voy a tomarle las huellas dactilares"},
+      {en:"Empty your pockets", es:"Vacíe sus bolsillos"},
+      {en:"Put all your belongings on the table", es:"Ponga todas sus pertenencias sobre la mesa"},
+      {en:"Put everything in this bag", es:"Ponga todo en esta bolsa"},
+      {en:"Take off your belt and shoelaces", es:"Quítese el cinturón y los cordones de los zapatos"},
+      {en:"Take a blanket and get into the cell", es:"Coja una manta y entre en el calabozo"},
+      {en:"This is the Police speaking! There is an emergency", es:"¡Les habla la Policía! Hay una emergencia"},
+      {en:"Get out of the building", es:"Salgan del edificio"},
+      {en:"Get out of the hotel", es:"Salgan del hotel"},
+      {en:"Get out of the stadium", es:"Salgan del estadio"},
+      {en:"Get out of the airport?", es:"Salgan del aeropuerto"},
+      {en:"There is a fire in the building", es:"Hay un incendio en el edificio"},
+      {en:"WThere is a bomb threat in the hotel", es:"Hay una amenaza de bomba en el hotel"},
+      {en:"Leave your room at once!", es:"Salga de su habitación de inmediato"},
+      {en:"Everybody out of here, follow our instructions.", es:"Todo el mundo fuera de aquí, sigan nuestras instrucciones."},
+      {en:"Stay calm, don’t get nervous", es:"Mantenga la calma, no se ponga nervioso"},
+      {en:"Don’t take anything! Leave your belongings", es:"No coja nada, deje sus pertenencias"},
+      {en:"I can’t get out of my room", es:"No puedo salir de mi habitación"},
+      {en:"Everybody behind the police line", es:"Todo el mundo detrás del cordón policial"},
+      {en:"Clear off quickly, this way!", es:"Despejen (la zona) rápidamente, ¡por aquí!"},
+      {en:"Go downstairs, don’t take the elevator", es:"Bajen las escaleras, no usen el ascensor"},
+      {en:"Go downstairs", es:"Baje las escaleras"},
+      {en:"Go upstairs", es:"Suba las escaleras"},
+      {en:"Stay where you are", es:"Quédese donde está"},
+      {en:"Where is the nearest ATM?", es:"¿Dónde está el cajero más cercano?"},
+      {en:"Where is the nearest pharmacy?", es:"¿Dónde está la farmacia más cercana?"},
+      {en:"Is there a hospital near here?", es:"¿Hay un hospital cerca de aquí?"},
+      {en:"Go straight on", es:"Siga todo recto"},
+      {en:"Go straight ahead", es:"Siga recto hacia delante"},
+      {en:"Turn right", es:"Gire a la derecha"},
+      {en:"right left", es:"Gire a la izquierda"},
+      {en:"It is on your left", es:"Está a su izquierda"},
+      {en:"It is on your right", es:"Está a su derecha"},
+      {en:"Take the second street on your left", es:"Coja la segunda calle a la izquierda"},
+      {en:"Take the first exit at the roundabout", es:"Coja la primera salida en la rotonda"},
+      {en:"It is on the graund floor", es:"Está en la planta baja"},
+      {en:"It is on the first floor", es:"Está en la primera planta"},
+      {en:"It is on the second floor", es:"Está en la segunda planta"},
+    ];
+
+    let current = [];
+    let timer = null;
+    let timeLeft = 90;
+    let index = 0;
+
+    const startBtn = document.getElementById('startBtn');
+    const showBtn = document.getElementById('showBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const phraseEl = document.getElementById('phrase');
+    const translationEl = document.getElementById('translation');
+    const timerEl = document.getElementById('timer');
+
+    function updateTimer() {
+      const mm = String(Math.floor(timeLeft/60)).padStart(2,'0');
+      const ss = String(timeLeft%60).padStart(2,'0');
+      timerEl.textContent = mm+':'+ss;
+    }
+
+    function startTimer() {
+      if(timer) return;
+      timer = setInterval(()=>{
+        timeLeft -= 1;
+        updateTimer();
+        if(timeLeft <= 0){
+          clearInterval(timer);
+          timer=null;
+          timeLeft = 0;
+          updateTimer();
+          alert('Tiempo terminado');
+          startBtn.disabled = false;
+        }
+      },1000);
+    }
+
+    function showPhrase() {
+      translationEl.textContent = '';
+      if(index < current.length){
+        phraseEl.textContent = current[index].es;
+      } else {
+        phraseEl.textContent = '';
+      }
+      nextBtn.disabled = index >= current.length - 1;
+      showBtn.disabled = index >= current.length;
+    }
+
+    startBtn.addEventListener('click',()=>{
+      for(let i = pairs.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
+      }
+      current = pairs.slice(0,15);
+      index = 0;
+      timeLeft = 90;
+      updateTimer();
+      showPhrase();
+      startBtn.disabled = true;
+      nextBtn.disabled = false;
+      showBtn.disabled = false;
+      startTimer();
+    });
+
+    showBtn.addEventListener('click',()=>{
+      if(index < current.length){
+        translationEl.textContent = current[index].en;
+      }
+    });
+
+    nextBtn.addEventListener('click',()=>{
+      if(index < current.length - 1){
+        index++;
+        showPhrase();
+      }
+    });
+
+    updateTimer();
+    nextBtn.disabled = true;
+    showBtn.disabled = true;
+  </script>
+  </body>
+</html>
+
