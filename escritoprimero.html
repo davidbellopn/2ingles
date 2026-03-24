@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Frases Inglés</title>
+    <style>
+    body {
+      margin:0;
+      background:#0f172a;
+      color:#e6eef6;
+      font-family:Inter,system-ui;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100vh;
+      padding:20px;
+      text-align:center;
+    }
+    #container2 {
+      max-width:900px;
+      width:100%;
+    }
+    #phrase {
+      font-size:2.5rem;
+      margin-bottom:10px;
+      font-weight:700;
+    }
+    #timer {
+      font-size:2.2rem;
+      font-weight:700;
+      color:#06b6d4;
+      margin-bottom:18px;
+    }
+    .btns {
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      margin-top:20px;
+    }
+    button {
+      background:linear-gradient(90deg,#06b6d4,#7dd3fc);
+      border:none;
+      padding:10px 16px;
+      border-radius:8px;
+      color:#002;
+      cursor:pointer;
+      font-weight:700;
+      font-size:16px;
+    }
+    #translation {
+      font-size:1.6rem;
+      margin-top:12px;
+      color:#7dd3fc;
+      font-weight:600;
+      min-height:1.8em;
+    }
+    button[disabled] {
+      opacity:0.5;
+      cursor:not-allowed;
+    }
+      
+    .container {
+        background: #1e293b;
+        padding: 30px;
+        border-radius: 12px;
+        width: 500px;
+        text-align: center;
+    }
+
+    input {
+        width: 90%;
+        padding: 10px;
+        margin-top: 15px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+    }
+
+    button {
+        margin-top: 15px;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .correct {
+        color: #22c55e;
+        font-weight: bold;
+    }
+
+    .incorrect {
+        color: #ef4444;
+        font-weight: bold;
+    }
+
+    .answer {
+        margin-top: 10px;
+        font-size: 14px;
+        opacity: 0.8;
+    }
+  </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="index.html"><img
+
+          src="logo%20PN%20transparente.png" alt="" style="width: 157px; height: 227px;"></a><br>
+      <h2 id="spanish"></h2>
+      <input id="userInput" placeholder="Escribe la frase en inglés"
+
+        type="text"> <br>
+      <button onclick="checkAnswer()">Corregir</button> <button onclick="nextQuestion()">Siguiente</button>
+      <p id="result"></p>
+      <p class="answer" id="correctAnswer"></p>
+    </div>
+    <script>
+const frases = [
+      {en:"What is your name / surname?", es:"¿Cuál es su nombre / apellido?"},
+      {en:"What is your full name?", es:"¿Cuál es su nombre completo?"},
+      {en:"What is your date / place of birth?", es:"¿Cuál es su fecha / lugar de nacimiento?"},
+      {en:"What is your nationality?", es:"¿Cuál es su nacionalidad?"},
+      {en:"What is your phone number?", es:"¿Cuál es su número de teléfono?"},
+      {en:"Can I see your passport / ID / driving licence?", es:"¿Puedo ver su pasaporte / DNI / permiso de conducir?"},
+      {en:"Can you show me your residence permit?", es:"¿Puede enseñarme su permiso de residencia?"},
+      {en:"What is your address in Spain?", es:"¿Cuál es su dirección en España?"},
+      {en:"Sir, are you OK, are you injured?", es:"Señor, ¿está bien?, ¿está herido?"},
+      {en:"I am injured", es:"Estoy lesionado / estoy herido / estoy sangrando"},
+  	  {en:"I am wounded", es:"Estoy herido"},
+  		{en:"I am bleeding", es:"Estoy sangrando"},
+      {en:"I am having a heart attack", es:"Me está dando un infarto"},
+ 		  {en:"I can’t breathe", es:"No puedo respirar"},
+      {en:"I think my arm is broken", es:"Creo que tengo el brazo roto"},
+      {en:"I think my leg is broken", es:"Creo que tengo la pierna rota"},
+      {en:"Somebody stabbed me in the chest", es:"Alguien me ha apuñalado en el pecho"},
+      {en:"Somebody shot me in the chest", es:"Alguien me ha disparado en el pecho"},
+      {en:"Try to keep calm, I’ll call an ambulance", es:"Intente mantener la calma, pediré una ambulancia"},
+      {en:"Do you take any medication?", es:"¿Toma alguna medicación?"},
+      {en:"My wallet has been stolen.", es:"Me han robado la cartera"},
+      {en:"Are you injured?", es:"¿Está usted herido?"},
+      {en:"How did it happen?", es:"¿Cómo ha sucedido?"},
+      {en:"Did you see the criminal? Can you describe him?", es:"¿Vio al autor? ¿Puede describirle?"},
+      {en:"How old was he?", es:"¿Cuántos años tenía?"},
+      {en:"Was he tall or short?", es:"¿Era alto o bajo?"},
+      {en:"To report a crime / to make a complaint", es:"Denunciar un delito"},
+      {en:"You have to go to the Police Station to report the crime.", es:"Tiene que ir a comisaría a denunciar el delito."},
+      {en:"Police! Stop! Don’t move! Freeze!", es:"¡Policía! ¡Alto! ¡No se mueva! ¡Quieto!"},
+      {en:"You are under arrest!", es:"Estás detenido"},
+      {en:"Against the wall, face the wall", es:"Contra la pared, cara a la pared"},
+      {en:"Get your hands out of your pockets! Let me see your hands!", es:"Saca las manos de los bolsillos / Déjame ver tus manos"},
+      {en:"Put your hands on the wall", es:"Pon las manos en la pared"},
+      {en:"Spread your arms, spread your legs, wider!", es:"Separa los brazos, separa las piernas, ¡más!"},
+      {en:"Put your hands behind your back", es:"Pon las manos detrás de tu espalda"},
+      {en:"Put your feet back", es:"Echa los pies hacia atrás"},
+      {en:"I am going to frisk you", es:"Voy a cachearte"},
+      {en:"I am going to handcuff you", es:"Voy a engrilletarte"},
+      {en:"Get into/ out of the car", es:"Métete en el coche"},
+      {en:"Drop the knife / Drop the weapon (gun)", es:"Suelte el cuchillo / suelte el arma."},
+    ];
+
+// ---- MODO PRO (sin repeticiones hasta terminar) ----
+let shuffled = [];
+let current = 0;
+let currentQuestion = null;
+
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function normalize(text) {
+    return text.toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
+function loadQuestion() {
+    currentQuestion = shuffled[current];
+
+    document.getElementById("spanish").innerText = currentQuestion.es;
+    document.getElementById("userInput").value = "";
+    document.getElementById("result").innerText = "";
+    document.getElementById("correctAnswer").innerText = "";
+}
+
+function checkAnswer() {
+    const user = normalize(document.getElementById("userInput").value);
+    const correct = normalize(currentQuestion.en);
+
+    if (user === correct) {
+        document.getElementById("result").innerHTML = "✔ CORRECTO";
+        document.getElementById("result").className = "correct";
+    } else {
+        document.getElementById("result").innerHTML = "✘ INCORRECTO";
+        document.getElementById("result").className = "incorrect";
+        document.getElementById("correctAnswer").innerText = "Respuesta correcta: " + currentQuestion.en;
+    }
+}
+
+function nextQuestion() {
+    if (current === 0) {
+        shuffled = shuffleArray([...frases]);
+    }
+
+    loadQuestion();
+
+    current++;
+
+    if (current >= shuffled.length) {
+        current = 0;
+    }
+}
+
+// Primera carga
+nextQuestion();
+</script>
+  </body>
+</html>
